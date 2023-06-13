@@ -1,0 +1,16 @@
+# Ignore compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore Python virtual environment
+venv/
+env/
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+
+# Ignore package dependencies (e.g., installed packages)
+pip-lock.txt
+pipenv-lock.txt
