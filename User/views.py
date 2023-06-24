@@ -6,10 +6,12 @@ from rest_framework import status
 from django.core import serializers
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import ClientSerializer, UserSerializer, ClientGetSerializer
-from .models import User, Clients
+from .serializers import ClientSerializer, UserSerializer, ClientGetSerializer, GetUniverView, UniversitySerializer
+from .models import User, Clients, University
 
 # Create your views here.
+
+# API for get one student with search by email
 class Clientview(APIView):
     serializer_class = ClientGetSerializer
     queryset = Clients
@@ -21,27 +23,32 @@ class Clientview(APIView):
 
         return Response(serialized_user, content_type='application/json')
 
-
+# API for post(add) new student
 class ClientPostView(APIView):
     serializer_class = ClientSerializer
     queryset = Clients
 
     @swagger_auto_schema(request_body=ClientSerializer)
     def post(self, request):
-        serializers = ClientSerializer(data=request.data)
-        if serializers.is_valid():
-            serializers.save()
-            return Response({
-                "status":"200.OK",
-                "data":serializers.data
-            })
+        university = request.data.get('university')
+        faculty = request.data.get('faculty')
+        if University.objects.filter(name = university, faculty = faculty).exists():
+            serializers = ClientSerializer(data=request.data)
+            if serializers.is_valid():
+                serializers.save()
+                return Response({
+                    "status":"200.OK",
+                    "data":serializers.data
+                })
+            else:
+                return Response({
+                    "status": "400 Bad Request",
+                    "errors": serializers.errors
+                })
         else:
-            return Response({
-                "status": "400 Bad Request",
-                "errors": serializers.errors
-            })
+            return Response("Bunday universitet yoq")
             
-    
+# API for get all students for consult
 class ClientsGetView(APIView):
     serializer_class = ClientSerializer
     queryset = Clients
@@ -50,7 +57,8 @@ class ClientsGetView(APIView):
         cliens = Clients.objects.all()
         serializer = ClientSerializer(cliens, many = True)
         return Response(serializer.data)
-    
+
+# API for loginpage   
 class LoginWorkersView(APIView):
     serializer = UserSerializer
     queryset = User
@@ -65,49 +73,52 @@ class LoginWorkersView(APIView):
             if serializers.is_valid():
                 serializers.save()
                 return Response(serializers.data)
+            else:
+                return Response(serializers.errors)
+        else:
+            return Response("Bunday foydalanuvchi topilmadi(")
+
+# API for get student for univer(without contacts)
+class UniverGetView(APIView):
+    serializer = GetUniverView
+    queryset = Clients
+
+    def get(self, request):
+        quiz = Clients.objects.all()
+        serializer = GetUniverView(quiz, many=True)
+        return Response(serializer.data)
+
+# API to add new universities
+class UniversityView(APIView):
+    serializer = UniversitySerializer
+    queryset = University
+
+    @swagger_auto_schema(request_body=UniversitySerializer)
+    def post(self, request):
+        serializers = UniversitySerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response({
+                "status":"200.OK",
+                "data":serializers.data
+            })
+        else:
+            return Response({
+                "status": "400 Bad Request",
+                "errors": serializers.errors
+            })
+        
+# API for choise field of universities
+class UniversityGet(APIView):
+    serializer = UniversitySerializer
+    queryset = University
+
+    def get(self):
+        univer = Clients.objects.all()
+        print(univer)
+        serializer = UniversitySerializer(univer, many=True)
+        return Response(serializer.data)
+    
 
 
 
-# serialized_user = {
-#             'id': user.id,
-#             'name':user.name,
-#             'surname':user.surname,
-#             'father_name':user.father_name, 
-#             'email':user.email,
-#             'date':user.date,
-#             'diploma':user.diploma,
-#             'picture':user.picture,
-#             'phone':user.phone,
-#             'pasport_seria':user.pasport_seria,
-#             'pasport_raqam':user.pasport_raqam,
-#             'university':user.university,
-#             'faculty':user.faculty,
-#         }
-#         json_data = json.dumps(serialized_user)  # Convert the dictionary to JSON
-
-#         return Response(json_data, content_type='application/json')
-
-# class Clientview(APIView):
-#     serializer_class = ClientGetSerializer
-#     queryset = Clients
-
-#     @swagger_auto_schema(request_body=ClientSerializer)
-#     def post(self, request):
-#         email = request.data['email']
-#         user = Clients.objects.filter(email=email)
-#         print(user)
-#         if user:
-#             serializer = ClientSerializer(data = request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response({"user" : user, 'data' :serializer.data})
-#             else:
-#                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             return Response(
-#                 {
-#                     "status": "400 Bad Request",
-#                     "errors": {"non_field_errors": ["User not found"]}
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
