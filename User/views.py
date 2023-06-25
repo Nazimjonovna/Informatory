@@ -32,7 +32,8 @@ class ClientPostView(APIView):
     def post(self, request):
         university = request.data.get('university')
         faculty = request.data.get('faculty')
-        if University.objects.filter(name = university, faculty = faculty).exists():
+        study_time = request.data.get('study_time')
+        if University.objects.filter(name = university, faculty = faculty, time_study = study_time).exists():
             serializers = ClientSerializer(data=request.data)
             if serializers.is_valid():
                 serializers.save()
