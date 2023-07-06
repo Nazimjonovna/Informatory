@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 # Add univer and consult workers
 class User(models.Model):
-    username = models.CharField(max_length=200)
+    ID_raqam = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     is_univer = models.BooleanField(default = False)
 
@@ -14,6 +14,7 @@ class User(models.Model):
 # Add students 
 class Clients(models.Model):
     name = models.CharField(max_length=200, null = True, blank=True)
+    consulting = models.CharField(max_length=2500)
     surname = models.CharField(max_length=200, null = True, blank=True)
     father_name = models.CharField(max_length=200, null = True, blank=True)
     email = models.CharField(max_length=500, null = True, blank=True)
@@ -41,8 +42,22 @@ class University(models.Model):
     )
     name = models.CharField(max_length=2500)
     faculty = models.CharField(max_length=250)
+    place = models.CharField(max_length=2500)
     time_study = models.CharField(max_length = 250, choices=study)
 
     def __str__(self) -> str:
+        return self.name
+
+
+# Add New Consulting(for new branch)
+class Consulting(models.Model):
+    place = models.CharField(max_length=2500)
+    number = models.CharField(max_length=20)
+    name = models.CharField(max_length=25000)
+    ID_raqam = models.CharField(max_length=2500)
+    director = models.CharField(max_length=2500)
+    place_office = models.CharField(max_length=25000000)
+    
+    def __str__(self):
         return self.name
 

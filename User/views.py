@@ -6,8 +6,8 @@ from rest_framework import status
 from django.core import serializers
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import ClientSerializer, UserSerializer, ClientGetSerializer, GetUniverView, UniversitySerializer
-from .models import User, Clients, University
+from .serializers import ClientSerializer, UserSerializer, ClientGetSerializer, GetUniverView, UniversitySerializer, ConsultingSerializer, GetConsultingSerializer
+from .models import User, Clients, University, Consulting
 
 # Create your views here.
 
@@ -66,9 +66,9 @@ class LoginWorkersView(APIView):
 
     @swagger_auto_schema(request_body=UserSerializer)
     def post(self, request):
-        username = request.data['username']
+        ID_raqam = request.data['ID_raqam']
         password = request.data['password']
-        user = User.objects.filter(username = username, password = password)
+        user = User.objects.filter(ID_raqam = ID_raqam, password = password)
         if user.exists():
             serializers = UserSerializer(data=request.data)
             if serializers.is_valid():
@@ -116,10 +116,34 @@ class UniversityGet(APIView):
 
     def get(self):
         univer = Clients.objects.all()
-        print(univer)
         serializer = UniversitySerializer(univer, many=True)
         return Response(serializer.data)
     
+
+# API for get all consultings
+class GetConsultings(APIView):
+    serializer_class = ConsultingSerializer
+    queryset = Consulting
+
+    def get(self, request):
+        data = Consulting.objects.all()
+        serializer = ConsultingSerializer(data, many = True)
+        return Response(serializer.data)
+        
+# API for get one consulting data
+class GetConsulting(APIView):
+    serializer_class = ConsultingSerializer
+    queryset = Consulting
+
+    @swagger_auto_schema(request_body=GetConsultingSerializer)
+    def post(self, request):
+        place = request.data['place']
+        try:
+            consult = Consulting.objects.get(place=place)
+            serializer = ConsultingSerializer(consult)
+            return Response(serializer.data)
+        except Consulting.DoesNotExist:
+            return Response("Bunday Consulting hozircha mavjud emas", status=status.HTTP_404_NOT_FOUND)
 
 
 

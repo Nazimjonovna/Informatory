@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Clients, University
+from .models import User, Clients, University, Consulting
 
 # Serializer for loginpage
 class UserSerializer(serializers.ModelSerializer):
@@ -30,3 +30,17 @@ class UniversitySerializer(serializers.ModelSerializer):
     class Meta:
         model = University
         fields = "__all__"
+
+
+# Serializer for get all consultings's data
+class ConsultingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consulting
+        fields = "__all__"
+
+
+# Serializer for get one conssulting's data
+class GetConsultingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consulting
+        fields = ('place',)
