@@ -8,7 +8,7 @@ class User(models.Model):
     is_univer = models.BooleanField(default = False)
 
     def __str__(self):
-        return self.username
+        return self.ID_raqam
     
 
 # Add students 

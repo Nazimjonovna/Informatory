@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from drf_yasg.utils import swagger_auto_schema
+from django.views.decorators.csrf import csrf_protect
 
 from .serializers import ClientSerializer, UserSerializer, ClientGetSerializer, GetUniverView, UniversitySerializer, ConsultingSerializer, GetConsultingSerializer
 from .models import User, Clients, University, Consulting
@@ -111,11 +112,8 @@ class UniversityView(APIView):
         
 # API for choise field of universities
 class UniversityGet(APIView):
-    serializer = UniversitySerializer
-    queryset = University
-
-    def get(self):
-        univer = Clients.objects.all()
+    def get(self, request):
+        univer = University.objects.all()
         serializer = UniversitySerializer(univer, many=True)
         return Response(serializer.data)
     
