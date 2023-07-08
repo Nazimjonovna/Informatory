@@ -19,10 +19,11 @@ class Clientview(APIView):
 
     def post(self,request, email, *args, **kwargs):
         user = Clients.objects.filter(email = email).first()
-        
-        serialized_user = serializers.serialize('json', [user]) 
-
-        return Response(serialized_user, content_type='application/json')
+        if user:
+            serialized_user = serializers.serialize('json', [user]) 
+            return Response(serialized_user, content_type='application/json')
+        else:
+            return Response("Bunday student mavjud emas!")
 
 # API for post(add) new student
 class ClientPostView(APIView):
