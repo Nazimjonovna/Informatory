@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import Clientview, ClientsGetView, ClientPostView, LoginWorkersView, UniverGetView, UniversityView, UniversityGet, GetConsulting, GetConsultings
+from .views import (Clientview, ClientsGetView, ClientPostView, LoginWorkersView, UniverGetView,
+                    UniversityView, UniversityGet, GetConsulting, GetConsultings, GetConsultClients)
 
 urlpatterns = [
     path('client_get/<str:email>/', Clientview.as_view()), #url for sreach one student
@@ -11,4 +12,5 @@ urlpatterns = [
     path("univers/", UniversityGet.as_view()), # url for get universities for choisefield
     path("consulting/", GetConsulting.as_view()), # url for get one consulting data
     path("consultings/", GetConsultings.as_view()), # url for get all consulting data
+    path("cunsilting_clients/", GetConsultClients.as_view()), # url for get all clients for one consulting
 ]

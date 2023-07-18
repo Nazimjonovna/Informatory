@@ -44,3 +44,14 @@ class GetConsultingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consulting
         fields = ('place',)
+
+# Serializer for get all clients for one consulting
+class GetConsultClients(serializers.ModelSerializer):
+    class Meta:
+        model = Consulting
+        fields = ('ID_raqam', )
+
+class GetUniverClients(serializers.ModelSerializer):
+    class Meta:
+        model = University
+        fields = ('ID_raqam', )
