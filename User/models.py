@@ -15,20 +15,20 @@ class User(models.Model):
 # Add students 
 class Clients(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
-    consulting = models.CharField(max_length=2500)
+    consulting = models.CharField(max_length=2500, default='')  # Set a default value
     surname = models.CharField(max_length=200, null=True, blank=True)
     father_name = models.CharField(max_length=200, null=True, blank=True)
     email = models.CharField(max_length=500, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
-    diploma = models.FileField(upload_to='diplomas', blank=True)
-    picture = models.FileField(upload_to='pictures', blank=True)
-    certificates = models.FileField(upload_to='certificates', blank=True, null=True)
+    diploma = models.FileField(upload_to='diplomas/', blank=True, null=True)
+    picture = models.FileField(upload_to='pictures/', blank=True, null=True)
+    certificates = models.FileField(upload_to='certificates/', blank=True, null=True)
     phone = models.CharField(max_length=200, blank=True)
     pasport_seria = models.CharField(max_length=3, blank=True)
     pasport_raqam = models.IntegerField(null=True, blank=True)
-    university = models.CharField(max_length=200, blank=True)
-    faculty = models.CharField(max_length=200, blank=True)
-    study_time = models.CharField(max_length=2500, blank=True)
+    university = models.CharField(max_length=200, blank=True, default='')  # Set a default value
+    faculty = models.CharField(max_length=200, blank=True, default='')  # Set a default value
+    study_time = models.CharField(max_length=2500, blank=True, default='')  # Set a default value
 
     def __str__(self):
         return self.name
