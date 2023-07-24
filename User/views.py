@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import render
+from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -71,6 +72,7 @@ from rest_framework.generics import CreateAPIView
 class ClientPostView(CreateAPIView):
     serializer_class = ClientSerializer
     queryset = Clients.objects.all()
+    parser_classes = [MultiPartParser]
 
     @swagger_auto_schema(request_body=ClientSerializer)
     def post(self, request, *args, **kwargs):
