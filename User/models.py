@@ -26,6 +26,7 @@ class Clients(models.Model):
     phone = models.CharField(max_length=200, blank=True)
     pasport_seria = models.CharField(max_length=3, blank=True)
     pasport_raqam = models.IntegerField(null=True, blank=True)
+    is_student = models.BooleanField(default = False)
     university = models.CharField(max_length=200, blank=True, default='')  # Set a default value
     faculty = models.CharField(max_length=200, blank=True, default='')  # Set a default value
     study_time = models.CharField(max_length=2500, blank=True, default='')  # Set a default value
@@ -46,9 +47,15 @@ class University(models.Model):
     ID_raqam = models.CharField(max_length=2500)
     place = models.CharField(max_length=2500)
     time_study = models.CharField(max_length=250, choices=study)
+    bio = models.CharField(max_length =50000)
+    date_begin = models.DateField()
+    mission = models.CharField(max_length = 50000)
 
     def __str__(self) -> str:
         return self.name
+
+    def formatted_date(self):
+        return self.date_begin.strftime('%d-%m-%Y')
 
 
 # Add New Consulting(for new branch)

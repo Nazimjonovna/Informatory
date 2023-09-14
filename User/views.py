@@ -1,14 +1,14 @@
 import json
 from django.shortcuts import render
 from rest_framework.parsers import MultiPartParser
+from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework import status
 from django.core import serializers
 from drf_yasg.utils import swagger_auto_schema
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import csrf_protect
-
 from .serializers import ClientSerializer, UserSerializer, ClientGetSerializer, GetUniverView, UniversitySerializer, \
     ConsultingSerializer, GetConsultingSerializer, GetConsultClients, GetUniverClients
 from .models import User, Clients, University, Consulting
@@ -18,9 +18,10 @@ from django.utils.decorators import method_decorator
 # Create your views here.
 
 # API for get one student with search by email
-class Clientview(APIView):
+class Clientview(APIView): # for post new client
     serializer_class = ClientGetSerializer
     queryset = Clients
+    permission_classes = ['permissions.IsAdminUser',]
 
     def post(self, request, email, *args, **kwargs):
         user = Clients.objects.filter(email=email).first()
@@ -29,43 +30,6 @@ class Clientview(APIView):
             return Response(serialized_user, content_type='application/json')
         else:
             return Response("Bunday student mavjud emas!")
-
-
-# API for post(add) new student
-# class ClientPostView(APIView):
-#     serializer_class = ClientSerializer
-#     queryset = Clients
-#
-#     @swagger_auto_schema(request_body=ClientSerializer)
-#     @csrf_protect
-#     def post(self, request):
-#         university = request.data.get('university')
-#         faculty = request.data.get('faculty')
-#         study_time = request.data.get('study_time')
-#         if University.objects.filter(ID_raqam=university, faculty=faculty, time_study=study_time).exists():
-#             serializers = ClientSerializer(data=request.data)
-#             if serializers.is_valid():
-#                 serializers.save()
-#                 return Response({
-#                     "status": "200.OK",
-#                     "data": serializers.data
-#                 })
-#             else:
-#                 return Response({
-#                     "status": "400 Bad Request",
-#                     "errors": serializers.errors
-#                 })
-#         else:
-#             return Response("Bunday universitet yoq")
-from rest_framework.generics import CreateAPIView
-
-
-# from rest_framework.generics import CreateAPIView
-# from rest_framework.response import Response
-# from .models import University, Clients
-# from .serializers import ClientSerializer
-# from django.views.decorators.csrf import csrf_exempt
-# from drf_yasg.utils import swagger_auto_schema
 
 
 @method_decorator(csrf_exempt, name='dispatch')  # Apply the csrf_exempt decorator
@@ -79,13 +43,8 @@ class ClientPostView(CreateAPIView):
         university = request.POST.get('university')
         faculty = request.POST.get('faculty')
         study_time = request.POST.get('study_time')
-
-        # Check if the university exists with the specified faculty and study_time
         if University.objects.filter(ID_raqam=university, faculty=faculty, time_study=study_time).exists():
-            # Create the ClientSerializer with the request data
             serializer = ClientSerializer(data=request.data)
-
-            # Validate the data and save the object if valid
             if serializer.is_valid():
                 serializer.save()
                 return Response({
@@ -211,3 +170,40 @@ class GetConsulting(APIView):
             return Response(serializer.data)
         except Consulting.DoesNotExist:
             return Response("Bunday Consulting hozircha mavjud emas", status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+# API for post(add) new student
+# class ClientPostView(APIView):
+#     serializer_class = ClientSerializer
+#     queryset = Clients
+#
+#     @swagger_auto_schema(request_body=ClientSerializer)
+#     @csrf_protect
+#     def post(self, request):
+#         university = request.data.get('university')
+#         faculty = request.data.get('faculty')
+#         study_time = request.data.get('study_time')
+#         if University.objects.filter(ID_raqam=university, faculty=faculty, time_study=study_time).exists():
+#             serializers = ClientSerializer(data=request.data)
+#             if serializers.is_valid():
+#                 serializers.save()
+#                 return Response({
+#                     "status": "200.OK",
+#                     "data": serializers.data
+#                 })
+#             else:
+#                 return Response({
+#                     "status": "400 Bad Request",
+#                     "errors": serializers.errors
+#                 })
+#         else:
+#             return Response("Bunday universitet yoq")
+
+# from rest_framework.generics import CreateAPIView
+# from rest_framework.response import Response
+# from .models import University, Clients
+# from .serializers import ClientSerializer
+# from django.views.decorators.csrf import csrf_exempt
+# from drf_yasg.utils import swagger_auto_schema
